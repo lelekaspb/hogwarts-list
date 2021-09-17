@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>Hogwarts student list</title>
+  </head>
+  <body>
+    <header>
+      <div class="search_wrapper">
+        <label class="label" for="search">Search:</label
+        ><input type="text" text="" id="search" />
+      </div>
+      <div class="filter_wrapper">
+        <label class="label">Filter:</label>
+        <div class="filter_list">
+          <ul>
+            <li>
+              <a href="#" data-filter="slytherin">Slytherin</a>
+              <div class="badge school_badge">8</div>
+            </li>
+            <li>
+              <a href="#" data-filter="ravenclaw">Ravenclaw</a>
+              <div class="badge school_badge">9</div>
+            </li>
+            <li>
+              <a href="#" data-filter="hufflepuff">Hufflepuff</a>
+              <div class="badge school_badge">8</div>
+            </li>
+            <li>
+              <a href="#" data-filter="gryffindor">Gryffindor</a>
+              <div class="badge school_badge">9</div>
+            </li>
+            <li>
+              <a href="#" data-filter="squad">Inquisitorial squad</a>
+              <div class="badge">14</div>
+            </li>
+            <li class="active">
+              <a href="#" data-filter="enrolled">Currently enrolled</a>
+              <div class="badge">32</div>
+            </li>
+            <li>
+              <a href="#" data-filter="expelled">Expelled</a>
+              <div class="badge">2</div>
+            </li>
+            <li>
+              <a href="#" data-filter="all">All students</a>
+              <div class="badge">34</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="logo_wrapper">
+        <img src="assets/logo.svg" alt="logo" class="logo" />
+      </div>
+      <div class="sort_wrapper">
+        <label for="sort_by" class="label">Sort by:</label>
+        <select name="sort_by" id="sort_by">
+          <option value="first_name">First name</option>
+          <option value="last_name" selected>Last name</option>
+        </select>
+      </div>
+      <div class="all_students">
+        <label id="displayed" class="label"
+          >Students currently displayed:</label
+        >
+        <div class="badge">32</div>
+      </div>
+    </header>
+    <main>
+      <ol>
+        <li>
+          <div class="student_wrapper">
+            <a href="#" class="student">Harry James Potter</a>
+            <div class="buttons">
+              <button id="test" class="prefect">
+                <span>Appoint as a prefect</span>
+              </button>
+              <button class="squad">Add to inquisitorial squad</button>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="student_wrapper">
+            <a href="#" class="student">Draco Lucious Malfoy</a>
+            <div class="buttons">
+              <button class="prefect">
+                <span>Revoke as a prefect</span>
+              </button>
+              <button class="squad">Remove from inquisitorial squad</button>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="student_wrapper">
+            <a href="#" class="student">Hermione Jean Granger</a>
+            <div class="buttons">
+              <button class="prefect">Revoke as a prefect</button>
+              <button class="squad">Add to inquisitorial squad</button>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="student_wrapper">
+            <a href="#" class="student">Neville Longbottom</a>
+            <div class="buttons">
+              <button class="prefect">Revoke as a prefect</button>
+              <button class="squad">Add to inquisitorial squad</button>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="student_wrapper">
+            <a href="#" class="student">Ernest Macmillan</a>
+            <div class="buttons">
+              <button class="prefect">Appoint as a prefect</button>
+              <button class="squad">Remove from inquisitorial squad</button>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="student_wrapper">
+            <a href="#" class="student">Parvati Patil</a>
+            <div class="buttons">
+              <button class="prefect">Revoke as a prefect</button>
+              <button class="squad">Remove from inquisitorial squad</button>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="student_wrapper">
+            <a href="#" class="student">Dean Thomas</a>
+            <div class="buttons">
+              <button class="prefect">Appoint as a prefect</button>
+              <button class="squad">Add to inquisitorial squad</button>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="student_wrapper">
+            <a href="#" class="student">Ronald Bilius Weasley</a>
+            <div class="buttons">
+              <button class="prefect">Appoint as a prefect</button>
+              <button class="squad">Add to inquisitorial squad</button>
+            </div>
+          </div>
+        </li>
+      </ol>
+    </main>
+
+    <!--student details popup-->
+    <div class="student_popup popup">
+      <div class="content_wrapper">
+        <div class="header">
+          <div class="crest">
+            <img
+              class="crest_image"
+              src="assets/crests/slytherin.png"
+              alt="slytherin house crest"
+            />
+          </div>
+          <div class="colors">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+            <div class="line4"></div>
+            <div class="line5"></div>
+          </div>
+        </div>
+        <div class="student_details">
+          <div class="details">
+            <div class="names">
+              <div class="first_name">
+                <span class="name_label label">First name:</span>
+                <span class="first_name">Draco</span>
+              </div>
+              <div class="middle_name">
+                <span class="name_label label">Middle name:</span>
+                <span class="middle_name">Lucious</span>
+              </div>
+              <div class="nick_name">
+                <span class="name_label label">Nick name:</span>
+                <span class="nick_name">none</span>
+              </div>
+              <div class="last_name">
+                <span class="name_label label">Last name:</span>
+                <span class="last_name">Malfoy</span>
+              </div>
+            </div>
+            <div class="blood">
+              <span class="blood_label label">Blood status:</span>
+              <span class="blood status">pure-blood</span>
+            </div>
+            <div class="prefect_status">Is not a prefect</div>
+            <div class="expelled_status">Is not expelled</div>
+            <div class="squad_status">
+              Is not a member of inquisitorial squad
+            </div>
+          </div>
+          <div class="picture">
+            <img
+              src="assets/malfoy_d.png"
+              alt="Draco Malfoy"
+              class="student_picture"
+            />
+          </div>
+        </div>
+        <div class="footer">
+          <button class="expell">Expell</button>
+          <button class="close">Close</button>
+        </div>
+      </div>
+    </div>
+    <!-- // student details popup-->
+
+    <!--pure blood prefects for Slytherin popup-->
+    <div class="only_pure_bloods popup">
+      <div class="content_wrapper">
+        <div class="only_pure_bloods_content">
+          <p>
+            Only pure-bloods can be added to inquisitorial squad from Slytherin
+            house.
+          </p>
+          <p>Choose another (pure-blood) student.</p>
+        </div>
+        <button class="close">Close</button>
+      </div>
+    </div>
+    <!-- // pure blood prefects for Slytherin popup-->
+
+    <!--revoke one prefect popup-->
+    <div class="two_prefects popup">
+      <div class="content_wrapper">
+        <div class="text">
+          <p>
+            There are already two students appointed as prefects from the ......
+            house.
+          </p>
+          <p>You have to revoke one in order to appoint the new one.</p>
+        </div>
+        <div class="buttons">
+          <button class="revoke">Revoke <span>Jane Doe</span></button>
+          <button class="close">Close</button>
+        </div>
+      </div>
+    </div>
+    <!-- // revoke one prefect popup-->
+
+    <!--revoke one prefect of the same gender popup-->
+    <div class="same_gender popup">
+      <div class="content_wrapper">
+        <div class="text">
+          <p>
+            There is already one girl appointed as prefect from the Slytherin
+            house.
+          </p>
+          <p>
+            Revoke her in order to appoint the new girl or choose a boy as
+            second prefect.
+          </p>
+        </div>
+        <div class="buttons">
+          <button class="revoke">Revoke <span>Jane Doe</span></button>
+          <button class="close">Close</button>
+        </div>
+      </div>
+    </div>
+    <!-- // revoke one prefect of the same gender popup-->
+
+    <footer>
+      <p>
+        Images from
+        <a href="https://www.pinpng.com/" class="source">pinpng.com,</a>
+        <a href="https://unsplash.com/" class="source">unsplush.com,</a>
+        <a href="https://seeklogo.com/" class="source">seeklogo.com</a>
+        <br />
+        This page was made as a study project at KEA, 2021
+      </p>
+    </footer>
+    <script src="js/script.js"></script>
+  </body>
+</html>
