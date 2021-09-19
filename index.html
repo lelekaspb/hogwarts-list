@@ -19,35 +19,49 @@
         <div class="filter_list">
           <ul>
             <li>
-              <a href="#" data-filter="slytherin">Slytherin</a>
+              <a href="#" data-filter="slytherin" id="filter_slytherin"
+                >Slytherin</a
+              >
               <div class="badge school_badge">8</div>
             </li>
             <li>
-              <a href="#" data-filter="ravenclaw">Ravenclaw</a>
+              <a href="#" data-filter="ravenclaw" id="filter_ravenclaw"
+                >Ravenclaw</a
+              >
               <div class="badge school_badge">9</div>
             </li>
             <li>
-              <a href="#" data-filter="hufflepuff">Hufflepuff</a>
+              <a href="#" data-filter="hufflepuff" id="filter_hufflepuff"
+                >Hufflepuff</a
+              >
               <div class="badge school_badge">8</div>
             </li>
             <li>
-              <a href="#" data-filter="gryffindor">Gryffindor</a>
+              <a href="#" data-filter="gryffindor" id="filter_gryffindor"
+                >Gryffindor</a
+              >
               <div class="badge school_badge">9</div>
             </li>
             <li>
-              <a href="#" data-filter="squad">Inquisitorial squad</a>
+              <a href="#" data-filter="squad" id="filter_squad"
+                >Inquisitorial squad</a
+              >
               <div class="badge">14</div>
             </li>
             <li class="active">
-              <a href="#" data-filter="enrolled">Currently enrolled</a>
+              <a href="#" data-filter="enrolled" id="filter_enrolled"
+                >Currently enrolled</a
+              >
               <div class="badge">32</div>
             </li>
             <li>
-              <a href="#" data-filter="expelled">Expelled</a>
+              <a href="#" data-filter="expelled" id="filter_expelled"
+                >Expelled</a
+              >
               <div class="badge">2</div>
             </li>
             <li>
-              <a href="#" data-filter="all">All students</a>
+              <a href="#" data-filter="all" id="filter_all">All students</a>
               <div class="badge">34</div>
             </li>
           </ul>
@@ -71,89 +85,33 @@
       </div>
     </header>
     <main>
-      <ol>
-        <li>
-          <div class="student_wrapper">
-            <a href="#" class="student">Harry James Potter</a>
-            <div class="buttons">
-              <button id="test" class="prefect">
-                <span data-prefect="appoint">Appoint as a prefect</span>
-              </button>
-              <button class="squad">Add to inquisitorial squad</button>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="student_wrapper">
-            <a href="#" class="student">Draco Lucious Malfoy</a>
-            <div class="buttons">
-              <button class="prefect">
-                <span>Revoke as a prefect</span>
-              </button>
-              <button class="squad">Remove from inquisitorial squad</button>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="student_wrapper">
-            <a href="#" class="student">Hermione Jean Granger</a>
-            <div class="buttons">
-              <button class="prefect">Revoke as a prefect</button>
-              <button class="squad">Add to inquisitorial squad</button>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="student_wrapper">
-            <a href="#" class="student">Neville Longbottom</a>
-            <div class="buttons">
-              <button class="prefect">Revoke as a prefect</button>
-              <button class="squad">Add to inquisitorial squad</button>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="student_wrapper">
-            <a href="#" class="student">Ernest Macmillan</a>
-            <div class="buttons">
-              <button class="prefect">Appoint as a prefect</button>
-              <button class="squad">Remove from inquisitorial squad</button>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="student_wrapper">
-            <a href="#" class="student">Parvati Patil</a>
-            <div class="buttons">
-              <button class="prefect">Revoke as a prefect</button>
-              <button class="squad">Remove from inquisitorial squad</button>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="student_wrapper">
-            <a href="#" class="student">Dean Thomas</a>
-            <div class="buttons">
-              <button class="prefect">Appoint as a prefect</button>
-              <button class="squad">Add to inquisitorial squad</button>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="student_wrapper">
-            <a href="#" class="student">Ronald Bilius Weasley</a>
-            <div class="buttons">
-              <button class="prefect">Appoint as a prefect</button>
-              <button class="squad">Add to inquisitorial squad</button>
-            </div>
-          </div>
-        </li>
-      </ol>
+      <ol id="student_list"></ol>
     </main>
+
+    <template>
+      <li>
+        <div
+          class="student_wrapper wrapper"
+          data-id="1"
+          data-prefect="appoint"
+          data-squad="add"
+        >
+          <a href="#" class="student">Harry James Potter</a>
+          <div class="buttons">
+            <button class="prefect" data-field="prefect">
+              <span>Appoint as a prefect</span>
+            </button>
+            <button class="squad" data-field="squad">
+              <span>Add to inquisitorial squad</span>
+            </button>
+          </div>
+        </div>
+      </li>
+    </template>
 
     <!--student details popup-->
     <div class="student_popup popup">
-      <div class="content_wrapper">
+      <div class="content_wrapper wrapper">
         <div class="header">
           <div class="crest">
             <img
@@ -192,7 +150,7 @@
             </div>
             <div class="blood">
               <span class="blood_label label">Blood status:</span>
-              <span class="blood status">pure-blood</span>
+              <span class="blood_status">pure-blood</span>
             </div>
             <div class="prefect_status">Is not a prefect</div>
             <div class="expelled_status">Is not expelled</div>
@@ -209,7 +167,9 @@
           </div>
         </div>
         <div class="footer">
-          <button class="expell">Expell</button>
+          <button class="expell">
+            <span>Expell</span>
+          </button>
           <button class="close">Close</button>
         </div>
       </div>
@@ -233,16 +193,19 @@
 
     <!--revoke one prefect popup-->
     <div class="two_prefects popup">
-      <div class="content_wrapper">
+      <div class="content_wrapper wrapper">
         <div class="text">
           <p>
-            There are already two students appointed as prefects from the ......
+            There are already two students appointed as prefects from the
+            <span class="house"></span>
             house.
           </p>
           <p>You have to revoke one in order to appoint the new one.</p>
         </div>
         <div class="buttons">
-          <button class="revoke">Revoke <span>Jane Doe</span></button>
+          <button class="revoke">
+            <div class="buttonTextWrapper">Revoke <span>Jane Doe</span></div>
+          </button>
           <button class="close">Close</button>
         </div>
       </div>
@@ -251,10 +214,11 @@
 
     <!--revoke one prefect of the same gender popup-->
     <div class="same_gender popup">
-      <div class="content_wrapper">
+      <div class="content_wrapper wrapper">
         <div class="text">
           <p>
-            There is already one girl appointed as prefect from the Slytherin
+            There is already one girl appointed as prefect from the
+            <span class="house"></span>
             house.
           </p>
           <p>
@@ -263,7 +227,9 @@
           </p>
         </div>
         <div class="buttons">
-          <button class="revoke">Revoke <span>Jane Doe</span></button>
+          <button class="revoke">
+            <div class="buttonTextWrapper">Revoke <span>Jane Doe</span></div>
+          </button>
           <button class="close">Close</button>
         </div>
       </div>

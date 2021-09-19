@@ -364,6 +364,11 @@ ol > li > .student_wrapper > .buttons {
 
 main button.prefect {
   margin: 0 1.5rem;
+  width: 15rem;
+}
+
+main button.squad {
+  width: 19rem;
 }
 
 /* main stylings end */
@@ -389,7 +394,7 @@ footer {
 .fade_out {
   transform-origin: center;
   animation-name: fade_out_kf;
-  animation-duration: 3s;
+  animation-duration: 2s;
   animation-timing-function: linear;
   animation-iteration-count: 1;
   animation-direction: normal;
@@ -431,7 +436,7 @@ footer {
 .fade_in {
   transform-origin: center;
   animation-name: fade_in_kf;
-  animation-duration: 3s;
+  animation-duration: 2s;
   animation-timing-function: linear;
   animation-iteration-count: 1;
   animation-direction: normal;
@@ -463,6 +468,52 @@ footer {
     filter: blur(0);
   }
 }
+
+.appear {
+  transform-origin: center;
+  animation-name: appear_kf;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+}
+
+@keyframes appear_kf {
+  0% {
+    opacity: 0;
+    transform: rotateY(-60deg);
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: rotateY(0deg);
+  }
+}
+
+.disappear {
+  transform-origin: center;
+  animation-name: disappear_kf;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+}
+
+@keyframes disappear_kf {
+  0% {
+    opacity: 1;
+    transform: rotateY(0deg);
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    transform: rotateY(60deg);
+    opacity: 0;
+  }
+}
 /* animations end */
 
 /* popups */
@@ -486,6 +537,7 @@ footer {
   border: 1px solid #888;
   border-radius: 5px;
   width: 60%;
+  /* perspective: 2000px; */
 }
 
 @media only screen and (max-width: 650px) {
@@ -669,7 +721,8 @@ footer {
 }
 
 .expell {
-  padding: 0.3rem 3rem;
+  padding: 0.3rem;
+  width: 10rem;
   color: var(--delete-color);
   border-color: var(--delete-color);
 }
@@ -694,6 +747,7 @@ footer {
   height: 35vh;
   display: grid;
   grid-template-rows: 1fr min-content;
+  /* perspective: 2000px; */
 }
 
 @media only screen and (max-width: 670px) {
@@ -731,6 +785,7 @@ footer {
   height: 35vh;
   display: grid;
   grid-template-rows: 1fr min-content;
+  /* perspective: 2000px; */
 }
 
 .two_prefects .content_wrapper .text,
@@ -749,6 +804,7 @@ footer {
 .same_gender .content_wrapper .buttons {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .two_prefects .close,
@@ -758,7 +814,8 @@ footer {
 
 .two_prefects .revoke,
 .same_gender .revoke {
-  padding: 0.3rem 3rem;
+  padding: 0.3rem;
+  width: 20rem;
   color: var(--delete-color);
   border-color: var(--delete-color);
 }
