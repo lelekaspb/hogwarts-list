@@ -1,5 +1,9 @@
 to add:
-- disable buttons prefect /squad for expelled students
+- disable buttons prefect /squad for expelled students - done
 - update activity diagram
 - start working on hacking function
 - start working on documentation for the hand-in
+- adjust media queries for responsivness after giving fixed width to buttons
+- adjust tick symbol hight so a button's hight does not change whent it's added
+- add disappear animation to "only-pure-bloods" popup - done
+- add popup closing on click away from the popup

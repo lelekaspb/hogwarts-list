@@ -371,6 +371,17 @@ main button.squad {
   width: 19rem;
 }
 
+button.prefect:disabled,
+button.squad:disabled,
+button.expell:disabled,
+button.prefect:disabled:hover,
+button.squad:disabled:hover,
+button.expell:disabled:hover {
+  opacity: 0.6;
+  cursor: default;
+  transform: scale(1);
+}
+
 /* main stylings end */
 
 /* footer stylings */
@@ -394,7 +405,7 @@ footer {
 .fade_out {
   transform-origin: center;
   animation-name: fade_out_kf;
-  animation-duration: 1s;
+  animation-duration: 2s;
   animation-timing-function: linear;
   animation-iteration-count: 1;
   animation-direction: normal;
@@ -430,7 +441,7 @@ footer {
 .fade_in {
   transform-origin: center;
   animation-name: fade_in_kf;
-  animation-duration: 1s;
+  animation-duration: 2s;
   animation-timing-function: linear;
   animation-iteration-count: 1;
   animation-direction: normal;

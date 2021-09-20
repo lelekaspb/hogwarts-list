@@ -377,6 +377,10 @@ function displayStudent(student) {
     student.house;
   studentClone.querySelector("button.prefect > span").textContent =
     reference.prefect[prefectField];
+  if (student.expelled) {
+    studentClone.querySelector("button.prefect").disabled = true;
+    studentClone.querySelector("button.squad").disabled = true;
+  }
   studentClone
     .querySelector("button.prefect")
     .addEventListener("click", changePrefectStatus);
@@ -440,6 +444,12 @@ function showStudentDetails(e) {
     ".picture > img"
   ).alt = `${student.firstName} ${student.lastName}`;
 
+  if (student.expelled === true) {
+    popup.querySelector("button.expell").disabled = true;
+  } else {
+    popup.querySelector("button.expell").disabled = false;
+  }
+
   popup.querySelector("button.expell").addEventListener("click", expellStudent);
   popup
     .querySelector("button.close")
@@ -462,6 +472,7 @@ function expellStudent(e) {
   );
   countBoolProperty("expelled");
   countEnrolled();
+  buildList();
 }
 
 function changeExpellButton(textElement) {
@@ -669,11 +680,6 @@ function closePopup(e) {
   e.target.closest(".content_wrapper").classList.add("disappear");
   e.target
     .closest(".content_wrapper")
-    .addEventListener("animationstart", function () {
-      console.log("animation start");
-    });
-  e.target
-    .closest(".content_wrapper")
     .addEventListener("animationend", removeDisappear);
   const textElement = e.target
     .closest(".buttons")
@@ -737,7 +743,11 @@ function showOnlyPureBloodPopup(student) {
 }
 
 function closePopupPureBloods(e) {
-  e.target.closest(".popup").style.display = "none";
+  e.target.closest(".content_wrapper").classList.add("disappear");
+  e.target
+    .closest(".content_wrapper")
+    .addEventListener("animationend", removeDisappear);
+  // e.target.closest(".popup").style.display = "none";
 }
 
 function findStudent(ID) {
