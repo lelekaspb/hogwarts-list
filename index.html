@@ -22,47 +22,47 @@
               <a href="#" data-filter="slytherin" id="filter_slytherin"
                 >Slytherin</a
               >
-              <div class="badge school_badge">8</div>
+              <div class="badge school_badge"></div>
             </li>
             <li>
               <a href="#" data-filter="ravenclaw" id="filter_ravenclaw"
                 >Ravenclaw</a
               >
-              <div class="badge school_badge">9</div>
+              <div class="badge school_badge"></div>
             </li>
             <li>
               <a href="#" data-filter="hufflepuff" id="filter_hufflepuff"
                 >Hufflepuff</a
               >
-              <div class="badge school_badge">8</div>
+              <div class="badge school_badge"></div>
             </li>
             <li>
               <a href="#" data-filter="gryffindor" id="filter_gryffindor"
                 >Gryffindor</a
               >
-              <div class="badge school_badge">9</div>
+              <div class="badge school_badge"></div>
             </li>
             <li>
               <a href="#" data-filter="squad" id="filter_squad"
                 >Inquisitorial squad</a
               >
-              <div class="badge">14</div>
+              <div class="badge squad_badge"><span></span></div>
             </li>
-            <li class="active">
+            <li>
               <a href="#" data-filter="enrolled" id="filter_enrolled"
                 >Currently enrolled</a
               >
-              <div class="badge">32</div>
+              <div class="badge"></div>
             </li>
             <li>
               <a href="#" data-filter="expelled" id="filter_expelled"
                 >Expelled</a
               >
-              <div class="badge">2</div>
+              <div class="badge"></div>
             </li>
-            <li>
+            <li class="active">
               <a href="#" data-filter="all" id="filter_all">All students</a>
-              <div class="badge">34</div>
+              <div class="badge"></div>
             </li>
           </ul>
         </div>
@@ -75,13 +75,14 @@
         <select name="sort_by" id="sort_by">
           <option value="first_name">First name</option>
           <option value="last_name" selected>Last name</option>
+          <option value="house">House</option>
         </select>
       </div>
       <div class="all_students">
         <label id="displayed" class="label"
           >Students currently displayed:</label
         >
-        <div class="badge">32</div>
+        <div class="badge"></div>
       </div>
     </header>
     <main>
@@ -96,7 +97,10 @@
           data-prefect="appoint"
           data-squad="add"
         >
-          <a href="#" class="student">Harry James Potter</a>
+          <a href="#" class="student"
+            ><span class="link_name">Harry James Potter</span>, &nbsp;
+            <span class="link_house">Gryffyndor</span></a
+          >
           <div class="buttons">
             <button class="prefect" data-field="prefect">
               <span>Appoint as a prefect</span>
@@ -180,9 +184,10 @@
     <div class="only_pure_bloods popup">
       <div class="content_wrapper">
         <div class="only_pure_bloods_content">
+          <p>... is not pure-blood.</p>
           <p>
-            Only pure-bloods can be added to inquisitorial squad from Slytherin
-            house.
+            Only pure-bloods can be added to inquisitorial squad from the
+            Slytherin house.
           </p>
           <p>Choose another (pure-blood) student.</p>
         </div>

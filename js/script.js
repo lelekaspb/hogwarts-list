@@ -55,7 +55,7 @@ const filter = {
   },
   sortBy: "last_name",
   all: {
-    chosen: false,
+    chosen: true,
     quantity: 0,
   },
 };
@@ -95,30 +95,32 @@ function registerEventListeners() {
 function registerFilterEventListeners() {
   document
     .querySelector("#filter_slytherin")
-    .addEventListener("click", updateFilter);
+    .addEventListener("click", filterStudents);
   document
     .querySelector("#filter_ravenclaw")
-    .addEventListener("click", updateFilter);
+    .addEventListener("click", filterStudents);
   document
     .querySelector("#filter_hufflepuff")
-    .addEventListener("click", updateFilter);
+    .addEventListener("click", filterStudents);
   document
     .querySelector("#filter_gryffindor")
-    .addEventListener("click", updateFilter);
+    .addEventListener("click", filterStudents);
   document
     .querySelector("#filter_squad")
-    .addEventListener("click", updateFilter);
+    .addEventListener("click", filterStudents);
   document
     .querySelector("#filter_enrolled")
-    .addEventListener("click", updateFilter);
+    .addEventListener("click", filterStudents);
   document
     .querySelector("#filter_expelled")
-    .addEventListener("click", updateFilter);
-  document.querySelector("#filter_all").addEventListener("click", updateFilter);
+    .addEventListener("click", filterStudents);
+  document
+    .querySelector("#filter_all")
+    .addEventListener("click", filterStudents);
 }
 
 function registerSortEventListener() {
-  document.querySelector("#sort_by").addEventListener("change", updateFilter);
+  document.querySelector("#sort_by").addEventListener("change", filterStudents);
 }
 
 function registerSearchEventListener() {
@@ -138,6 +140,7 @@ async function loadJSON() {
 
 function prepareObjects(studentsJSON, familiesJSON) {
   allStudents = studentsJSON.map(prepareObject, familiesJSON);
+  displayFilterQuantities();
   getImageSrc();
   buildList();
 }
@@ -292,17 +295,53 @@ function buildList() {
   const currentList = prepareFilteredList(allStudents);
   const sortedList = prepareSortedList(currentList);
   displayList(sortedList);
+  document.querySelector(".all_students").querySelector(".badge").textContent =
+    sortedList.length;
 }
 
 function prepareFilteredList(list) {
   let newList = list;
-  //calculations
+
+  if (filter.slytherin.chosen === true) {
+    newList = list.filter((student) => student.house === "Slytherin");
+  } else if (filter.ravenclaw.chosen === true) {
+    newList = list.filter((student) => student.house === "Ravenclaw");
+  } else if (filter.hufflepuff.chosen === true) {
+    newList = list.filter((student) => student.house === "Hufflepuff");
+  } else if (filter.gryffindor.chosen === true) {
+    newList = list.filter((student) => student.house === "Gryffindor");
+  } else if (filter.squad.chosen === true) {
+    newList = list.filter((student) => student.squad === true);
+  } else if (filter.enrolled.chosen === true) {
+    newList = list.filter((student) => student.expelled === false);
+  } else if (filter.expelled.chosen === true) {
+    newList = list.filter((student) => student.expelled === true);
+  } else if (filter.all.chosen === true) {
+    newList = list;
+  }
+
   return newList;
 }
 
 function prepareSortedList(list) {
-  let newList = list;
-  //calculations
+  const newList = list.sort(sortFunc);
+
+  function sortFunc(x, y) {
+    if (filter.sortBy === "last_name") {
+      let a = x.lastName.toUpperCase();
+      let b = y.lastName.toUpperCase();
+      return a == b ? 0 : a > b ? 1 : -1;
+    } else if (filter.sortBy === "first_name") {
+      let a = x.firstName.toUpperCase();
+      let b = y.firstName.toUpperCase();
+      return a == b ? 0 : a > b ? 1 : -1;
+    } else if (filter.sortBy === "house") {
+      let a = x.house.toUpperCase();
+      let b = y.house.toUpperCase();
+      return a == b ? 0 : a > b ? 1 : -1;
+    }
+  }
+
   return newList;
 }
 
@@ -332,7 +371,10 @@ function displayStudent(student) {
   studentClone.querySelector(".student_wrapper").dataset.id = student.id;
   studentClone.querySelector(".student_wrapper").dataset.prefect = prefectField;
   studentClone.querySelector(".student_wrapper").dataset.squad = squadField;
-  studentClone.querySelector("a.student").textContent = student.fullName;
+  studentClone.querySelector("a.student .link_name").textContent =
+    student.fullName;
+  studentClone.querySelector("a.student .link_house").textContent =
+    student.house;
   studentClone.querySelector("button.prefect > span").textContent =
     reference.prefect[prefectField];
   studentClone
@@ -355,7 +397,6 @@ function showStudentDetails(e) {
     parseInt(e.target.closest(".student_wrapper").dataset.id)
   );
   const popup = document.querySelector(".student_popup");
-  console.log(student);
 
   popup.querySelector(".content_wrapper").dataset.id = student.id;
 
@@ -419,6 +460,8 @@ function expellStudent(e) {
   changeExpellButton(
     e.target.closest(".content_wrapper").querySelector("button.expell > span")
   );
+  countBoolProperty("expelled");
+  countEnrolled();
 }
 
 function changeExpellButton(textElement) {
@@ -451,7 +494,10 @@ function changeExpellButton(textElement) {
 }
 
 function closeStudentDetails(e) {
-  e.target.closest(".popup").style.display = "none";
+  e.target.closest(".content_wrapper").classList.add("disappear");
+  e.target
+    .closest(".content_wrapper")
+    .addEventListener("animationend", removeDisappear);
   e.target.closest(".popup").querySelector(".expelled_status").textContent = "";
   e.target.closest(".popup").querySelector("button.expell > span").textContent =
     "Expell";
@@ -509,6 +555,9 @@ function showTwoPrefectsPopup(popup, house, studentToRevoke, studentToAppoint) {
     studentToRevoke.id;
   popup.querySelector(".content_wrapper").dataset.appoint_id =
     studentToAppoint.id;
+  popup.querySelector(
+    "p:nth-child(2)"
+  ).textContent = `Revoke ${studentToRevoke.firstName} ${studentToRevoke.lastName} in order to appoint ${studentToAppoint.firstName} ${studentToAppoint.lastName}.`;
   popup.querySelector(".content_wrapper").classList.add("appear");
   popup
     .querySelector(".content_wrapper")
@@ -525,10 +574,12 @@ function showSameGenderPopup(popup, house, studentToRevoke, studentToAppoint) {
   ).innerHTML = `There is already one ${studentToAppoint.gender} appointed as prefect from the
   <span class="house">${house}</span> house.`;
   popup.querySelector("p:nth-child(2)").innerHTML = ` Revoke ${
-    studentToAppoint.gender === "girl" ? "her" : "him"
-  } in order to appoint the new ${
-    studentToAppoint.gender === "girl" ? "girl" : "boy"
-  } or choose a ${studentToAppoint.gender === "girl" ? "boy" : "girl"} as
+    studentToRevoke.firstName
+  } ${studentToRevoke.lastName} in order to appoint ${
+    studentToAppoint.firstName
+  } ${studentToAppoint.lastName} or choose a ${
+    studentToAppoint.gender === "girl" ? "boy" : "girl"
+  } as
   second prefect.`;
   popup.querySelector(
     "button.revoke  span"
@@ -554,6 +605,7 @@ function removeAppear(e) {
 function removeDisappear(e) {
   e.target.removeEventListener("animationend", removeDisappear);
   e.target.classList.remove("disappear");
+  e.target.closest(".popup").style.display = "none";
 }
 
 function changePrefect(e) {
@@ -614,13 +666,19 @@ function revokePrefect(student) {
 }
 
 function closePopup(e) {
-  // e.target.classList.add("disappear");
-  // e.target.addEventListener("animationend", removeDisappear);
+  e.target.closest(".content_wrapper").classList.add("disappear");
+  e.target
+    .closest(".content_wrapper")
+    .addEventListener("animationstart", function () {
+      console.log("animation start");
+    });
+  e.target
+    .closest(".content_wrapper")
+    .addEventListener("animationend", removeDisappear);
   const textElement = e.target
     .closest(".buttons")
     .querySelector(".buttonTextWrapper");
   textElement.innerHTML = `Revoke <span></span>`;
-  e.target.closest(".popup").style.display = "none";
 }
 
 function changeSquadStatus(e) {
@@ -635,7 +693,7 @@ function changeSquadStatus(e) {
         addToSquad(student);
         fadeOut(e, "squad");
       } else {
-        showOnlyPureBloodPopup();
+        showOnlyPureBloodPopup(student);
       }
     } else {
       addToSquad(student);
@@ -649,13 +707,20 @@ function changeSquadStatus(e) {
 
 function addToSquad(student) {
   student.squad = true;
+  changeSquadQuantityDisplay();
 }
 
 function removeFromSquad(student) {
   student.squad = false;
+  changeSquadQuantityDisplay();
 }
 
-function showOnlyPureBloodPopup() {
+function showOnlyPureBloodPopup(student) {
+  document
+    .querySelector(".only_pure_bloods")
+    .querySelector(
+      "p:nth-child(1)"
+    ).textContent = `${student.firstName} ${student.lastName} is not a pure-blood.`;
   document.querySelector(".only_pure_bloods").style.display = "block";
   document
     .querySelector(".only_pure_bloods")
@@ -683,9 +748,121 @@ function filterByOneCriteria(list, criteria, value) {
   return list.filter((student) => student[criteria] === value);
 }
 
-function updateFilter(e) {}
+function countQuantities(list, criteria, value) {
+  const quantityArray = filterByOneCriteria(list, criteria, value);
+  return quantityArray.length;
+}
+
+function countHouse(house) {
+  const studentsNumber = countQuantities(
+    allStudents,
+    "house",
+    capitalize(house)
+  );
+  filter[house.toLowerCase()].quantity = studentsNumber;
+  displayQuantity(house.toLowerCase());
+}
+
+function countBoolProperty(property) {
+  const studentNumber = countQuantities(allStudents, property, true);
+  filter[property].quantity = studentNumber;
+  displayQuantity(property);
+}
+
+function countEnrolled() {
+  const studentsNumber =
+    allStudents.length - countQuantities(allStudents, "expelled", true);
+  filter.enrolled.quantity = studentsNumber;
+  displayQuantity("enrolled");
+}
+
+function countAllStudents() {
+  filter.all.quantity = allStudents.length;
+  displayQuantity("all");
+}
+
+function displayQuantity(filterProrerty) {
+  const parent = document.querySelector(
+    `[data-filter="${filterProrerty.toLowerCase()}"]`
+  ).parentNode;
+  const badge = parent.querySelector(".badge");
+  if (badge.classList.contains("squad_badge")) {
+    badge.querySelector("span").textContent =
+      filter[filterProrerty.toLowerCase()].quantity;
+  } else {
+    badge.textContent = filter[filterProrerty.toLowerCase()].quantity;
+  }
+}
+
+function changeSquadQuantityDisplay() {
+  const squadNumber = countQuantities(allStudents, "squad", true);
+  filter.squad.quantity = squadNumber;
+  const squadBadge = document.querySelector(".badge.squad_badge");
+  squadBadge.querySelector("span").className = "";
+  squadBadge.querySelector("span").classList.add("fade_out");
+  squadBadge
+    .querySelector("span")
+    .addEventListener("animationend", changeSquadQuantityAnimation);
+
+  function changeSquadQuantityAnimation(e) {
+    e.target.classList.remove("fade_out");
+    e.target.removeEventListener("animationend", changeSquadQuantityAnimation);
+    changeText(e.target);
+    e.target.classList.add("fade_in");
+    e.target.addEventListener("animationend", removeFadeIn);
+  }
+
+  function changeText(element) {
+    element.textContent = filter.squad.quantity;
+  }
+}
+
+function displayFilterQuantities() {
+  countHouse("slytherin");
+  countHouse("ravenclaw");
+  countHouse("hufflepuff");
+  countHouse("gryffindor");
+  countBoolProperty("squad");
+  countBoolProperty("expelled");
+  countEnrolled();
+  countAllStudents();
+}
+
+function filterStudents(e) {
+  if (e.target.nodeName === "SELECT") {
+    updateSort(e.target.value);
+  } else {
+    changeActiveClass(e.target.closest("li"));
+    updateFilterObject(e.target.dataset.filter);
+  }
+  buildList();
+}
+
+function updateSort(sortBy) {
+  filter.sortBy = sortBy;
+}
+
+function updateFilterObject(filterProrerty) {
+  filter[filterProrerty].chosen = !filter[filterProrerty].chosen;
+
+  const keys = Object.keys(filter);
+  keys.forEach((key) => {
+    if (key !== filterProrerty && key !== "sortBy") {
+      filter[key].chosen = false;
+    }
+  });
+}
+
+function changeActiveClass(element) {
+  document.querySelectorAll(".filter_list li").forEach((item) => {
+    item.classList.remove("active");
+  });
+  element.classList.add("active");
+}
 
 function searchStudent(e) {
+  updateFilterObject("all");
+  changeActiveClass(document.querySelector("#filter_all").parentNode);
   const searchedText = e.target.value.toLowerCase();
   const matchingStudents = [];
   allStudents.forEach((student) => {
@@ -694,6 +871,8 @@ function searchStudent(e) {
       matchingStudents.push(student);
     }
   });
+  document.querySelector(".all_students > .badge").textContent =
+    matchingStudents.length;
   displayList(matchingStudents);
 }
 
