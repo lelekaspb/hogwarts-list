@@ -6,4 +6,5 @@ to add:
 - adjust media queries for responsivness after giving fixed width to buttons
 
 
-- add comments to the code
+- add comments to the code - done for now
+- add check on whether a student's photo exists or not, so I don't get error in the console
