@@ -451,9 +451,7 @@ function showStudentDetails(e) {
   }
 
   popup.querySelector("button.expell").addEventListener("click", expellStudent);
-  popup
-    .querySelector("button.close")
-    .addEventListener("click", closeStudentDetails);
+  window.addEventListener("click", checkForCloseStudentDetails);
 
   popup.querySelector(".content_wrapper").classList.add("appear");
   popup
@@ -475,43 +473,88 @@ function expellStudent(e) {
   buildList();
 }
 
-function changeExpellButton(textElement) {
-  const textElement2 = textElement
-    .closest(".content_wrapper")
-    .querySelector(".expelled_status");
-  textElement.classList.add("fade_out");
-  textElement2.classList.add("fade_out");
-  textElement.addEventListener("animationend", changeText);
-
-  function changeText() {
-    textElement2.textContent = "Is expelled";
-    textElement.textContent = "Expelled ✓";
-    removeFadeOut();
-    addFadeIn();
-  }
-  function removeFadeOut() {
-    textElement.classList.remove("fade_out");
-    textElement2.classList.remove("fade_out");
-    textElement.removeEventListener("animationend", changeText);
-    textElement2.removeEventListener("animationend", changeText);
-  }
-
-  function addFadeIn() {
-    textElement.classList.add("fade_in");
-    textElement.addEventListener("animationend", removeFadeIn);
-    textElement2.classList.add("fade_in");
-    textElement2.addEventListener("animationend", removeFadeIn);
+function checkForCloseStudentDetails(e) {
+  if (e.target.classList.contains("close")) {
+    closeStudentDetailsClickBtn(e.target);
+  } else if (e.target.classList.contains("popup")) {
+    closeStudentDetailsClickAway(e.target);
   }
 }
 
-function closeStudentDetails(e) {
-  e.target.closest(".content_wrapper").classList.add("disappear");
-  e.target
+function changeExpellButton(buttonText) {
+  const expelledStatusText = buttonText
+    .closest(".content_wrapper")
+    .querySelector(".expelled_status");
+  buttonText.classList.add("fade_out");
+  expelledStatusText.classList.add("fade_out");
+  buttonText.addEventListener("animationend", changeTextExpell);
+}
+
+function changeTextExpell(e) {
+  const button = e.target;
+  const expelledStatus = button
+    .closest(".content_wrapper")
+    .querySelector(".expelled_status");
+  expelledStatus.textContent = "Is expelled";
+  button.innerHTML = `Expelled <span class="tick">✓</span>`;
+  removeFadeOutExpell(button, expelledStatus);
+  addFadeInExpell(button, expelledStatus);
+}
+function removeFadeOutExpell(button, expelledStatus) {
+  button.classList.remove("fade_out");
+  expelledStatus.classList.remove("fade_out");
+  button.removeEventListener("animationend", changeTextExpell);
+  expelledStatus.removeEventListener("animationend", changeTextExpell);
+}
+
+function addFadeInExpell(button, expelledStatus) {
+  button.classList.add("fade_in");
+  button.addEventListener("animationend", removeFadeIn);
+  expelledStatus.classList.add("fade_in");
+  expelledStatus.addEventListener("animationend", removeFadeIn);
+}
+
+function closeStudentDetailsClickAway(element) {
+  element.querySelector(".content_wrapper").classList.add("disappear");
+  element
+    .querySelector(".content_wrapper")
+    .addEventListener("animationend", removeDisappear);
+  changeBackStudentDetailsPopup(element.querySelector("button.expell"));
+}
+
+function closeStudentDetailsClickBtn(element) {
+  element.closest(".content_wrapper").classList.add("disappear");
+  element
     .closest(".content_wrapper")
     .addEventListener("animationend", removeDisappear);
-  e.target.closest(".popup").querySelector(".expelled_status").textContent = "";
-  e.target.closest(".popup").querySelector("button.expell > span").textContent =
-    "Expell";
+  changeBackStudentDetailsPopup(
+    element.closest(".popup").querySelector("button.expell")
+  );
+}
+
+function changeBackStudentDetailsPopup(button) {
+  setTimeout(() => {
+    clearTextExpell(button);
+    clearEventListenersStudentDetailsPopup(button);
+  }, 300);
+}
+
+function clearTextExpell(button) {
+  button.closest(".popup").querySelector(".expelled_status").textContent = "";
+  button.querySelector("span").textContent = "Expell";
+}
+
+function clearEventListenersStudentDetailsPopup(button) {
+  button.querySelector("span").className = "";
+  button
+    .closest(".content_wrapper")
+    .querySelector(".expelled_status").className = "expelled_status";
+  button
+    .querySelector("span")
+    .removeEventListener("animationend", changeTextExpell);
+
+  button.removeEventListener("click", expellStudent);
+  window.removeEventListener("click", checkForCloseStudentDetails);
 }
 
 function changePrefectStatus(e) {
@@ -575,7 +618,16 @@ function showTwoPrefectsPopup(popup, house, studentToRevoke, studentToAppoint) {
     .addEventListener("animationend", removeAppear);
   popup.style.display = "block";
   popup.querySelector("button.revoke").addEventListener("click", changePrefect);
-  popup.querySelector("button.close").addEventListener("click", closePopup);
+
+  window.addEventListener("click", checkForClose);
+}
+
+function checkForClose(e) {
+  if (e.target.classList.contains("close")) {
+    closePopupClickBtn(e.target);
+  } else if (e.target.classList.contains("popup")) {
+    closePopupClickAway(e.target);
+  }
 }
 
 function showSameGenderPopup(popup, house, studentToRevoke, studentToAppoint) {
@@ -605,7 +657,8 @@ function showSameGenderPopup(popup, house, studentToRevoke, studentToAppoint) {
     .addEventListener("animationend", removeAppear);
   popup.style.display = "block";
   popup.querySelector("button.revoke").addEventListener("click", changePrefect);
-  popup.querySelector("button.close").addEventListener("click", closePopup);
+
+  window.addEventListener("click", checkForClose);
 }
 
 function removeAppear(e) {
@@ -648,24 +701,25 @@ function changePrefect(e) {
 
 function changeButtonText(textElement) {
   textElement.classList.add("fade_out");
-  textElement.addEventListener("animationend", changeText);
+  textElement.addEventListener("animationend", changeTextPrefect);
+}
 
-  function changeText() {
-    textElement.querySelector("span").innerHTML = "&nbsp; ✓";
-    textElement.firstChild.textContent = "Revoked ";
-    removeFadeOut();
-    addFadeIn();
-  }
+function changeTextPrefect() {
+  textElement.querySelector("span").innerHTML = "&nbsp; ✓";
+  textElement.querySelector("span").classList.add("tick");
+  textElement.firstChild.textContent = "Revoked ";
+  removeFadeOutPrefect();
+  addFadeInPrefect();
+}
 
-  function removeFadeOut() {
-    textElement.classList.remove("fade_out");
-    textElement.removeEventListener("animationend", changeText);
-  }
+function removeFadeOutPrefect() {
+  textElement.classList.remove("fade_out");
+  textElement.removeEventListener("animationend", changeTextPrefect);
+}
 
-  function addFadeIn() {
-    textElement.classList.add("fade_in");
-    textElement.addEventListener("animationend", removeFadeIn);
-  }
+function addFadeInPrefect() {
+  textElement.classList.add("fade_in");
+  textElement.addEventListener("animationend", addFadeInPrefect);
 }
 
 function addPrefect(student) {
@@ -676,15 +730,42 @@ function revokePrefect(student) {
   student.prefect = false;
 }
 
-function closePopup(e) {
-  e.target.closest(".content_wrapper").classList.add("disappear");
-  e.target
+function closePopupClickAway(element) {
+  element.querySelector(".content_wrapper").classList.add("disappear");
+  element
+    .querySelector(".content_wrapper")
+    .addEventListener("animationend", removeDisappear);
+  changeBackRevokeButton(element.querySelector(".revoke"));
+}
+
+function closePopupClickBtn(element) {
+  element.closest(".content_wrapper").classList.add("disappear");
+  element
     .closest(".content_wrapper")
     .addEventListener("animationend", removeDisappear);
-  const textElement = e.target
-    .closest(".buttons")
-    .querySelector(".buttonTextWrapper");
-  textElement.innerHTML = `Revoke <span></span>`;
+
+  changeBackRevokeButton(element.closest(".buttons").querySelector(".revoke"));
+}
+
+function changeBackRevokeButton(button) {
+  setTimeout(() => {
+    clearTextPrefect(button);
+    clearEventListenersPopup(button);
+  }, 300);
+}
+
+function clearTextPrefect(button) {
+  button.querySelector(".buttonTextWrapper").innerHTML = `Revoke <span></span>`;
+}
+
+function clearEventListenersPopup(button) {
+  button.removeEventListener("click", changePrefect);
+  button.querySelector(".buttonTextWrapper").className = "buttonTextWrapper";
+  button
+    .querySelector(".buttonTextWrapper")
+    .removeEventListener("animationend", changeTextPrefect);
+
+  window.removeEventListener("click", checkForClose);
 }
 
 function changeSquadStatus(e) {
@@ -730,24 +811,40 @@ function showOnlyPureBloodPopup(student) {
   document.querySelector(".only_pure_bloods").style.display = "block";
   document
     .querySelector(".only_pure_bloods")
-    .querySelector("button.close")
-    .addEventListener("click", closePopupPureBloods);
-  document
-    .querySelector(".only_pure_bloods")
     .querySelector(".content_wrapper")
     .classList.add("appear");
   document
     .querySelector(".only_pure_bloods")
     .querySelector(".content_wrapper")
     .addEventListener("animationend", removeAppear);
+
+  window.addEventListener("click", checkForClosePureBloods);
 }
 
-function closePopupPureBloods(e) {
-  e.target.closest(".content_wrapper").classList.add("disappear");
-  e.target
+function checkForClosePureBloods(e) {
+  if (e.target.classList.contains("close")) {
+    closePopupPureBloodsClickBtn(e.target);
+  } else if (e.target.classList.contains("popup")) {
+    closePopupPureBloodsClickAway(e.target);
+  }
+}
+
+function closePopupPureBloodsClickBtn(element) {
+  element.closest(".content_wrapper").classList.add("disappear");
+  element
     .closest(".content_wrapper")
     .addEventListener("animationend", removeDisappear);
-  // e.target.closest(".popup").style.display = "none";
+
+  window.removeEventListener("click", checkForClosePureBloods);
+}
+
+function closePopupPureBloodsClickAway(element) {
+  element.querySelector(".content_wrapper").classList.add("disappear");
+  element
+    .querySelector(".content_wrapper")
+    .addEventListener("animationend", removeDisappear);
+
+  window.removeEventListener("click", checkForClosePureBloods);
 }
 
 function findStudent(ID) {
