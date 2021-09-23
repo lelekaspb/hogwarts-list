@@ -19,6 +19,16 @@ const Student = {
   imageSource: "",
   id: 0,
   isExpellable: true,
+  set squadStatus(value) {
+    this.squad = value;
+    this.squadListener(value);
+  },
+  squadListener(value) {
+    console.log("new value is " + value);
+  },
+  registerNewListener: function (externalListenerFunction) {
+    this.squadListener = externalListenerFunction;
+  },
 };
 
 // used for generating id for every student
@@ -1007,7 +1017,7 @@ function changeSquadStatus(e) {
 
 // add student to inquisitorial squad
 function addToSquad(student) {
-  student.squad = true;
+  student.squadStatus = true;
   // update display of squad's members on filter
   changeSquadQuantityDisplay();
 }
@@ -1395,20 +1405,31 @@ function randomNumber() {
 }
 
 function bringDownInquisitorialSquadSystem() {
-  console.log("bringDownInquisitorialSquadSystem");
-  // const squadMembers = allStudents.filter(student => student.squad === true);'
+  allStudents.forEach(changeSquadListener);
 
-  Object.defineProperty(Student, "squad", {
-    set: function (value) {
-      this.squad = value;
-      changeSquadStatusOnHack();
-    },
-    get: function () {
-      return this._myVar;
-    },
-  });
-}
+  function changeSquadListener(student) {
+    student.registerNewListener(function (val) {
+      setTimeout(() => {
+        // if user has not already removed the student from inquisitorial squad while we were waiting:
+        if (student.squad === true) {
+          // remove the student from squad
+          removeFromSquad(student);
+          // change data-squad attribute and text on "squad" button in html
+          changeStudentUI(student);
+        }
+        // if student is not a member of inquisirorial squad, do nothing
+      }, 20000);
+    });
+  }
 
-function changeSquadStatusOnHack() {
-  console.log("changeSquadStatusOnHack");
+  function changeStudentUI(student) {
+    // find student on the html page
+    const studentMarkup = document.querySelector(`[data-id="${student.id}"]`);
+
+    // trigger fading out animation on button text
+    studentMarkup.querySelector(".squad > span").classList.add("fade_out");
+    studentMarkup
+      .querySelector(".squad > span")
+      .addEventListener("animationend", changeButton);
+  }
 }
