@@ -12,7 +12,7 @@
   --ravenclaw-secondary-color: #b8c0b8;
   --hufflepuff-main-color: #fdd216;
   --hufflepuff-secondary-color: #102024;
-  --text-size: 1.2rem;
+  --text-size: 1.1rem;
   --footer-text-size: 1rem;
 }
 
@@ -40,6 +40,10 @@ main a {
 header,
 main {
   margin: 2rem calc(1rem + 9vw);
+}
+
+header {
+  margin: 2rem calc(1rem + 18vw);
 }
 
 @media only screen and (max-width: 1150px) {
@@ -148,7 +152,7 @@ input#search:focus {
 
 .filter_wrapper {
   display: grid;
-  grid-template-columns: 0.5fr 1fr 1fr 1fr;
+  grid-template-columns: 0.15fr 1fr;
   align-self: flex-end;
 }
 
@@ -157,7 +161,8 @@ input#search:focus {
 }
 
 .filter_wrapper .filter_list {
-  grid-column: 2 / span 3;
+  grid-column: 2 / span 1;
+  display: flex;
 }
 
 @media only screen and (max-width: 900px) {
@@ -305,6 +310,8 @@ option {
 
 .label {
   font-weight: 600;
+  margin-top: 0.5rem;
+  margin-right: 1rem;
 }
 
 @media only screen and (max-width: 600px) {

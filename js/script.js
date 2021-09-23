@@ -91,12 +91,17 @@ const reference = {
 // count how many times system was hacked
 let hackCounter = 0;
 
+// variable for storing entered keys on keyboard
+let stroke = "";
+// variable for storing time when the last key was entered, used for calculating interval between entered keys
+let lastKeyTime = Date.now();
+
 window.addEventListener("DOMContentLoaded", start);
 
 // initialize code after DOM content is loaded
 function start() {
   registerEventListeners();
-  loadJSON();
+  runJSONfetching();
 }
 
 // add event listeners to static buttons/divs/inputs on the page
@@ -104,6 +109,7 @@ function registerEventListeners() {
   registerFilterEventListeners();
   registerSortEventListener();
   registerSearchEventListener();
+  registerHackEventListener();
 }
 
 // add event listeners to filter items
@@ -144,8 +150,41 @@ function registerSearchEventListener() {
   document.querySelector("#search").addEventListener("keyup", searchStudent);
 }
 
+// add event listener for hacking function (keystroke)
+function registerHackEventListener() {
+  document.addEventListener("keyup", checkKeystroke);
+}
+
+// check whether entered characters are correct for firing the hackTheSystem function
+function checkKeystroke(e) {
+  // define the "magic" keystroke
+  const charList = "hackit";
+  // transform to lower case in order to make the function case insensitive
+  const key = e.key.toLowerCase();
+  // if the entered key is not from the charList, don't execute code any further
+  if (charList.indexOf(key) === -1) {
+    return;
+  }
+  //  if the entered key is from the charList, record the time it was entered (now)
+  const currentTime = Date.now();
+  // check if time interval between the last entered key and the current is greater than 1.5 seconds
+  if (currentTime - lastKeyTime > 1500) {
+    // if yes, reset the stroke variable
+    stroke = "";
+  }
+  // if not, concatenate the stroke variable and the currently entered key
+  stroke += e.key;
+  // update time of last entered key
+  lastKeyTime = currentTime;
+  // check if stroke variable is equal to the "magic" keystroke that is supposed to fire the hack function
+  if (stroke === charList) {
+    console.log("here goes");
+    hackTheSystem();
+  }
+}
+
 // fetch students data and families data for calculating blood status
-async function loadJSON() {
+const loadJSON = async function () {
   // fetch students data
   const studentsResponse = await fetch("assets/json/students.json");
   const studentsJSON = await studentsResponse.json();
@@ -156,6 +195,14 @@ async function loadJSON() {
 
   // when loaded, prepare data objects
   prepareObjects(studentsJSON, familiesJSON);
+};
+
+async function runJSONfetching() {
+  try {
+    await loadJSON();
+  } catch (err) {
+    console.log("Caught error " + err);
+  }
 }
 
 // prepare array of students with proper formatted names and blood statuses
@@ -896,26 +943,37 @@ function changeButtonText(textElement) {
 }
 
 // change text on "prefect" button, trigger fading in animation
-function changeTextPrefect() {
+function changeTextPrefect(e) {
+  console.log(e.target);
+  // define text element to be changed (text on the button)
+  const textElement = e.target
+    .closest(".buttons")
+    .querySelector(".buttonTextWrapper");
   textElement.querySelector("span").innerHTML = "&nbsp; ✓";
   textElement.querySelector("span").classList.add("tick");
   textElement.firstChild.textContent = "Revoked ";
   // remove fade out animation
-  removeFadeOutPrefect();
+  removeFadeOutPrefect(textElement);
   // add fade in animation
-  addFadeInPrefect();
+  addFadeInPrefect(textElement);
 }
 
 // remove fade out animation on "prefect" button
-function removeFadeOutPrefect() {
+function removeFadeOutPrefect(textElement) {
   textElement.classList.remove("fade_out");
   textElement.removeEventListener("animationend", changeTextPrefect);
 }
 
 // add fade in animation on "prefect" button
-function addFadeInPrefect() {
+function addFadeInPrefect(textElement) {
   textElement.classList.add("fade_in");
-  textElement.addEventListener("animationend", addFadeInPrefect);
+  textElement.addEventListener("animationend", removeFadeInPrefect);
+}
+
+// remove fade in animation on "prefect" button
+function removeFadeInPrefect(e) {
+  e.target.classList.add("fade_in");
+  e.target.addEventListener("animationend", removeFadeInPrefect);
 }
 
 // set student's prefect property to true
@@ -1347,6 +1405,8 @@ function enrollHacker() {
   createHackerObject();
   // display new list of students including hacker
   displayHackedStudentList();
+  // update number of students in house of the hacker
+  updateHackerHouseQuantity();
 }
 
 // create hacker object
@@ -1379,6 +1439,11 @@ function displayHackedStudentList() {
   countAllStudents();
 }
 
+// update number of students in Ravenclaw
+function updateHackerHouseQuantity() {
+  countHouse("ravenclaw");
+}
+
 // mess with blood statuses
 function bringDownBloodStatuses() {
   // change blood status for every student
@@ -1402,8 +1467,9 @@ function getrandomBloodStatus() {
 function randomNumber() {
   return Math.floor(Math.random() * 3);
 }
-
+// mess with inquisitorial squad
 function bringDownInquisitorialSquadSystem() {
+  // change squad listener for every student object
   allStudents.forEach(changeSquadListener);
 
   function changeSquadListener(student) {
@@ -1425,10 +1491,13 @@ function bringDownInquisitorialSquadSystem() {
     // find student on the html page
     const studentMarkup = document.querySelector(`[data-id="${student.id}"]`);
 
-    // trigger fading out animation on button text
-    studentMarkup.querySelector(".squad > span").classList.add("fade_out");
-    studentMarkup
-      .querySelector(".squad > span")
-      .addEventListener("animationend", changeButton);
+    // if the student is currently displayed (could be that other filter field was chosen), change squad button
+    if (studentMarkup !== null) {
+      // trigger fading out animation on button text
+      studentMarkup.querySelector(".squad > span").classList.add("fade_out");
+      studentMarkup
+        .querySelector(".squad > span")
+        .addEventListener("animationend", changeButton);
+    }
   }
 }

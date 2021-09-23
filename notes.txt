@@ -3,7 +3,11 @@ to add:
 - update activity diagram
 
 - start working on documentation for the hand-in
-- adjust media queries for responsivness after giving fixed width to buttons
 
 
-- correct two parallel async functions to promiseAll or sth like that
+
+
+
+
+
+
