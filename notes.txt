@@ -1,10 +1,10 @@
 to add:
 
 - update activity diagram
-- start working on hacking function
+
 - start working on documentation for the hand-in
 - adjust media queries for responsivness after giving fixed width to buttons
 
-
-- add comments to the code - done for now
-- add check on whether a student's photo exists or not, so I don't get error in the console
+- randomize blood status 
+- hack inquisitorial squad 
+- correct two parallel async functions to promiseAll or sth like that

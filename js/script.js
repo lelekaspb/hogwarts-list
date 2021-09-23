@@ -18,6 +18,7 @@ const Student = {
   squad: false,
   imageSource: "",
   id: 0,
+  isExpellable: true,
 };
 
 // used for generating id for every student
@@ -78,6 +79,9 @@ const reference = {
     hufflepuff: "assets/crests/hufflepuff.png",
   },
 };
+
+// count how many times system was hacked
+let hackCounter = 0;
 
 window.addEventListener("DOMContentLoaded", start);
 
@@ -207,6 +211,7 @@ function prepareObject(studentObject) {
   student.squad = false;
   // every time the "generateID" function is called, it increments ID and returns unique number
   student.id = generateID();
+  student.isExpellable = true;
 
   return student;
 }
@@ -295,22 +300,26 @@ function generateID() {
 // calculate image source
 function getImageSrc() {
   allStudents.forEach((student) => {
-    // for every student, find out whether there are more students with the same last name
-    const sameLastName = allStudents.filter(
-      (item) => item.lastName === student.lastName
-    );
+    if (student.lastName !== "") {
+      // for every student, find out whether there are more students with the same last name
+      const sameLastName = allStudents.filter(
+        (item) => item.lastName === student.lastName
+      );
 
-    // check whether last name consists of two words with hyphen, and, if yes, shorten it
-    const shortenedLastName = shortenLastName(student.lastName);
+      // check whether last name consists of two words with hyphen, and, if yes, shorten it
+      const shortenedLastName = shortenLastName(student.lastName);
 
-    // if there is more than one student with the same last name
-    if (sameLastName.length > 1) {
-      student.imageSrc = `assets/images/${shortenedLastName.toLowerCase()}_${student.firstName.toLowerCase()}.png`;
+      // if there is more than one student with the same last name
+      if (sameLastName.length > 1) {
+        student.imageSrc = `assets/images/${shortenedLastName.toLowerCase()}_${student.firstName.toLowerCase()}.png`;
+      } else {
+        // if there is only one student with this last name
+        student.imageSrc = `assets/images/${shortenedLastName.toLowerCase()}_${student.firstName
+          .slice(0, 1)
+          .toLowerCase()}.png`;
+      }
     } else {
-      // if there is only one student with this last name
-      student.imageSrc = `assets/images/${shortenedLastName.toLowerCase()}_${student.firstName
-        .slice(0, 1)
-        .toLowerCase()}.png`;
+      student.imageSrc = "";
     }
   });
 }
@@ -544,18 +553,48 @@ function expellStudent(e) {
   const student = findStudent(
     parseInt(e.target.closest(".content_wrapper").dataset.id)
   );
-  // set the "expelled" student's property to true
-  student.expelled = true;
-  // change text on the "expell" button in order to give the user visual feedback
-  changeExpellButton(
-    e.target.closest(".content_wrapper").querySelector("button.expell > span")
-  );
-  // update quantity of expelled students on the corresponding filter field
-  countBoolProperty("expelled");
-  // update quantity of enrolled students on the corresponding filter field
-  countEnrolled();
-  // trigger redisplay of students in order to get disabled buttons (prefect and squad) for the expelled student
-  buildList();
+  // if student is not the hacker, expell
+  if (student.isExpellable === true) {
+    // set the "expelled" student's property to true
+    student.expelled = true;
+    // change text on the "expell" button in order to give the user visual feedback
+    changeExpellButton(
+      e.target.closest(".content_wrapper").querySelector("button.expell > span")
+    );
+    // update quantity of expelled students on the corresponding filter field
+    countBoolProperty("expelled");
+    // update quantity of enrolled students on the corresponding filter field
+    countEnrolled();
+    // trigger redisplay of students in order to get disabled buttons (prefect and squad) for the expelled student
+    buildList();
+    // if student is the hacker, do not expell
+  } else {
+    // output message in the console that the hacker student cannot be expelled
+    console.log(`${student.firstName} ${student.lastName} cannot be expelled.`);
+    // add shaking animation to the button
+    addShakingAnimation(
+      e.target.closest(".content_wrapper").querySelector(".expell")
+    );
+    // play a "no go" sound
+    playNoGoSound();
+  }
+}
+
+// add shaking animation to "expell" button when user is trying to expell hacker
+function addShakingAnimation(button) {
+  button.classList.add("shake");
+  button.addEventListener("animationend", removeShakingAnimation);
+}
+
+// play a "no go" sound together with shaking the "expell" button
+function playNoGoSound() {
+  document.querySelector("#nogo").play();
+}
+
+// remove shaking animation class when animation has ended
+function removeShakingAnimation(e) {
+  e.target.classList.remove("shake");
+  e.target.removeEventListener("animationend", removeShakingAnimation);
 }
 
 // close student's details popup if "close" button or outer div (beyond the popup's content) was clicked
@@ -1112,10 +1151,12 @@ function changeSquadQuantityDisplay() {
 
   // remove fading out animation and trigger fading in animation
   function changeSquadQuantityAnimation(e) {
+    // remove fading out animation
     e.target.classList.remove("fade_out");
     e.target.removeEventListener("animationend", changeSquadQuantityAnimation);
     // change text inside squad badge
     changeText(e.target);
+    // trigger fading in animation
     e.target.classList.add("fade_in");
     e.target.addEventListener("animationend", removeFadeIn);
   }
@@ -1204,6 +1245,13 @@ function searchStudent(e) {
     matchingStudents.length;
   // display matching students
   displayList(matchingStudents);
+  // when search input is out of focus, clear it
+  e.target.addEventListener("blur", clearInput);
+}
+
+// clear search input value when it's not in focus
+function clearInput(e) {
+  e.target.value = "";
 }
 
 // add fading out animation to span inside button
@@ -1267,4 +1315,100 @@ function changeAnimation(element) {
 function removeFadeIn(e) {
   e.target.classList.remove("fade_in");
   e.target.removeEventListener("animationend", removeFadeIn);
+}
+
+// hacking
+function hackTheSystem() {
+  // if the system has not been hacked, hack it
+  if (hackCounter === 0) {
+    enrollHacker(hackCounter);
+    bringDownBloodStatuses(hackCounter);
+    bringDownInquisitorialSquadSystem(hackCounter);
+
+    // if the system has beed hacked, do not hack it
+  } else {
+    console.log("The system has already been hacked...");
+  }
+  // increment hack counter variable
+  hackCounter++;
+}
+
+// add hacker to the student list
+function enrollHacker() {
+  // create hacker object from Student object
+  createHackerObject();
+  // display new list of students including hacker
+  displayHackedStudentList();
+}
+
+// create hacker object
+function createHackerObject() {
+  const hacker = Object.create(Student);
+  hacker.firstName = "Olga";
+  hacker.lastName = "Baeva";
+  hacker.nickName = "";
+  hacker.middleName = "";
+
+  hacker.house = "Ravenclaw";
+  hacker.gender = "";
+  hacker.bloodStatus = "muggle-blood";
+  hacker.fullName = `${hacker.firstName} ${hacker.lastName}`;
+  hacker.imageSrc = "";
+  hacker.prefect = false;
+  hacker.expelled = false;
+  hacker.squad = false;
+  hacker.isExpellable = false;
+  hacker.id = generateID();
+
+  // push hacker into allStudents array
+  allStudents.push(hacker);
+}
+
+// trigger redisplay of altered student list
+function displayHackedStudentList() {
+  buildList();
+  // update number of all students and currently displayed students
+  countAllStudents();
+}
+
+// mess with blood statuses
+function bringDownBloodStatuses() {
+  // change blood status for every student
+  allStudents.forEach(changeBloodStatus);
+}
+
+// change blood status for a student
+function changeBloodStatus(student) {
+  student.bloodStatus = getrandomBloodStatus();
+}
+
+// generate random blood status
+function getrandomBloodStatus() {
+  const bloodStatuses = ["pure-blood", "half-blood", "muggle-blood"];
+  const randomBloodStatus = bloodStatuses[randomNumber()];
+  return randomBloodStatus;
+}
+
+// generate random number from 0 to 2
+function randomNumber() {
+  return Math.floor(Math.random() * 3);
+}
+
+function bringDownInquisitorialSquadSystem() {
+  console.log("bringDownInquisitorialSquadSystem");
+  // const squadMembers = allStudents.filter(student => student.squad === true);'
+
+  Object.defineProperty(Student, "squad", {
+    set: function (value) {
+      this.squad = value;
+      changeSquadStatusOnHack();
+    },
+    get: function () {
+      return this._myVar;
+    },
+  });
+}
+
+function changeSquadStatusOnHack() {
+  console.log("changeSquadStatusOnHack");
 }
