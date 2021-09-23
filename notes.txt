@@ -5,6 +5,5 @@ to add:
 - start working on documentation for the hand-in
 - adjust media queries for responsivness after giving fixed width to buttons
 
-- randomize blood status 
-- hack inquisitorial squad 
+
 - correct two parallel async functions to promiseAll or sth like that

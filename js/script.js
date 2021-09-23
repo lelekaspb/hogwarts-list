@@ -23,9 +23,7 @@ const Student = {
     this.squad = value;
     this.squadListener(value);
   },
-  squadListener(value) {
-    console.log("new value is " + value);
-  },
+  squadListener() {},
   registerNewListener: function (externalListenerFunction) {
     this.squadListener = externalListenerFunction;
   },
@@ -1385,6 +1383,7 @@ function displayHackedStudentList() {
 function bringDownBloodStatuses() {
   // change blood status for every student
   allStudents.forEach(changeBloodStatus);
+  console.log("Blood statuses were randomly changed");
 }
 
 // change blood status for a student
@@ -1408,7 +1407,7 @@ function bringDownInquisitorialSquadSystem() {
   allStudents.forEach(changeSquadListener);
 
   function changeSquadListener(student) {
-    student.registerNewListener(function (val) {
+    student.registerNewListener(function () {
       setTimeout(() => {
         // if user has not already removed the student from inquisitorial squad while we were waiting:
         if (student.squad === true) {
