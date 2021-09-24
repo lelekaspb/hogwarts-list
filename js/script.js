@@ -1483,7 +1483,7 @@ function bringDownInquisitorialSquadSystem() {
           // change data-squad attribute and text on "squad" button in html
           changeStudentUI(student);
         }
-        // if student is not a member of inquisirorial squad, do nothing
+        // if student is not a member of inquisitorial  squad, do nothing
       }, 20000);
     });
   }
