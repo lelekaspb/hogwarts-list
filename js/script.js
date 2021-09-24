@@ -1387,9 +1387,9 @@ function removeFadeIn(e) {
 function hackTheSystem() {
   // if the system has not been hacked, hack it
   if (hackCounter === 0) {
-    enrollHacker(hackCounter);
-    bringDownBloodStatuses(hackCounter);
-    bringDownInquisitorialSquadSystem(hackCounter);
+    enrollHacker();
+    bringDownBloodStatuses();
+    bringDownInquisitorialSquadSystem();
 
     // if the system has beed hacked, do not hack it
   } else {
