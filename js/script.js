@@ -944,7 +944,6 @@ function changeButtonText(textElement) {
 
 // change text on "prefect" button, trigger fading in animation
 function changeTextPrefect(e) {
-  console.log(e.target);
   // define text element to be changed (text on the button)
   const textElement = e.target
     .closest(".buttons")
@@ -1226,6 +1225,7 @@ function changeSquadQuantityDisplay() {
     e.target.classList.add("fade_in");
     e.target.addEventListener("animationend", removeFadeIn);
   }
+  // +
 
   // change text inside squad badge
   function changeText(element) {
@@ -1467,6 +1467,7 @@ function getrandomBloodStatus() {
 function randomNumber() {
   return Math.floor(Math.random() * 3);
 }
+
 // mess with inquisitorial squad
 function bringDownInquisitorialSquadSystem() {
   // change squad listener for every student object
