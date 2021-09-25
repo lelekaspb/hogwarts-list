@@ -1,8 +1,4 @@
-to add:
 
-- update activity diagram - done
-
-- start working on documentation for the hand-in
 
 
 

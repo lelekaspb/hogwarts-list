@@ -19,11 +19,15 @@ const Student = {
   imageSource: "",
   id: 0,
   isExpellable: true,
+  // add a setter for updating the squad property and letting the squad listener know that the value has been changed
   set squadStatus(value) {
     this.squad = value;
-    this.squadListener(value);
+    this.squadListener();
   },
+  // the listener is empty at the beginning
   squadListener() {},
+  // create a method for changing the squad listener property so I can fire a function
+  // for changing back the squad property later from hacking function
   registerNewListener: function (externalListenerFunction) {
     this.squadListener = externalListenerFunction;
   },
@@ -1418,7 +1422,7 @@ function createHackerObject() {
   hacker.middleName = "";
 
   hacker.house = "Ravenclaw";
-  hacker.gender = "";
+  hacker.gender = "girl";
   hacker.bloodStatus = "muggle-blood";
   hacker.fullName = `${hacker.firstName} ${hacker.lastName}`;
   hacker.imageSrc = "";
